@@ -7,7 +7,7 @@ function App() {
   return (
     <div className='container mx-auto'>
     <Header/>
-    <div className='mt-12 md:flex'>
+    <div className='mt-12 md:flex gap-1'>
       <Formulario/>
       <Listado/>
     </div>
