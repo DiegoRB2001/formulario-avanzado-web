@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react";
 
-const Formulario = ({ setEstudiantes, estudiantes, estudiante }) => {
+const Formulario = ({
+  setEstudiantes,
+  estudiantes,
+  estudiante,
+  setEstudiante,
+  modificar,
+  setModificar,
+}) => {
   const [nombre, setNombre] = useState("");
   const [carrera, setCarrera] = useState("");
   const [semestre, setSemestre] = useState("");
   const [promedio, setPromedio] = useState("");
-
-  const generarID = () => {
-    const fecha = Date.now().toString(36);
-    const random = Math.random().toString(36).substring(2);
-    return random + fecha;
-  };
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (Object.keys(estudiante).length > 0) {
+    if (Object.keys(estudiante).length > 0 && modificar) {
       setNombre(estudiante.nombre);
       setCarrera(estudiante.carrera);
       setSemestre(estudiante.semestre);
@@ -21,11 +23,14 @@ const Formulario = ({ setEstudiantes, estudiantes, estudiante }) => {
     }
   }, [estudiante]);
 
-  const [error, setError] = useState(false);
+  const generarID = () => {
+    const fecha = Date.now().toString(36);
+    const random = Math.random().toString(36).substring(2);
+    return random + fecha;
+  };
 
   const manejadorSubmit = (e) => {
     e.preventDefault();
-    console.log("Énviando datos");
     if (
       [
         nombre.trim(),
@@ -34,7 +39,6 @@ const Formulario = ({ setEstudiantes, estudiantes, estudiante }) => {
         promedio.trim(),
       ].includes("")
     ) {
-      console.log("No se permiten vacios");
       setError(true);
       return;
     }
@@ -44,7 +48,7 @@ const Formulario = ({ setEstudiantes, estudiantes, estudiante }) => {
       semestre,
       promedio,
     };
-    if (estudiante.id) {
+    if (estudiante.id && modificar) {
       objetoEstudiante.id = estudiante.id;
       const estudiantesActualizados = estudiantes.map((estudianteState) =>
         estudianteState.id === estudiante.id
@@ -52,6 +56,8 @@ const Formulario = ({ setEstudiantes, estudiantes, estudiante }) => {
           : estudianteState
       );
       setEstudiantes(estudiantesActualizados);
+      setEstudiante({});
+      setModificar(false);
     } else {
       objetoEstudiante.id = generarID();
       setEstudiantes([...estudiantes, objetoEstudiante]);
@@ -136,7 +142,7 @@ const Formulario = ({ setEstudiantes, estudiantes, estudiante }) => {
         <div>
           <input
             type="submit"
-            value={estudiante.id ? "Modificar" : "Agregar"}
+            value={modificar ? "Modificar" : "Agregar"}
             className="bg-[#d00000] w-full rounded-md p-2 uppercase hover:bg-[#9d0208] cursor-pointer"
           />
         </div>
